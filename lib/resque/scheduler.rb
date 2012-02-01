@@ -116,7 +116,8 @@ module Resque
           interval_types = %w{cron every}
           interval_types.each do |interval_type|
             if !config[interval_type].nil? && config[interval_type].length > 0
-              @@scheduled_jobs[name] = rufus_scheduler.send(interval_type, config[interval_type]) do
+              options = config[:options] || {}
+              @@scheduled_jobs[name] = rufus_scheduler.send(interval_type, config[interval_type], options) do
                 log! "queueing #{config['class']} (#{name})"
                 handle_errors { enqueue_from_config(config) }
               end
